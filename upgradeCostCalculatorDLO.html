@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Upgrade Gold Calculator</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+}
+
+.container{
+    width:450px;
+    max-width:100%;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.card{
+    background:#1e293b;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+.inputs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+.input-group input{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+}
+
+button{
+    margin-top:20px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#3b82f6;
+    color:white;
+    font-size:17px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+button:hover{
+    background:#2563eb;
+}
+
+.result{
+    margin-top:25px;
+    text-align:center;
+}
+
+.result h2{
+    color:#94a3b8;
+    font-size:18px;
+}
+
+.result h1{
+    color:#22c55e;
+    margin-top:10px;
+    font-size:42px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>Upgrade Gold Calculator</h1>
+
+<div class="card">
+
+<div class="inputs">
+
+<div class="input-group">
+<label>Current Level</label>
+<input type="number" id="current" min="1" value="1">
+</div>
+
+<div class="input-group">
+<label>Target Level</label>
+<input type="number" id="target" min="2" value="50">
+</div>
+
+</div>
+
+<button onclick="calculate()">Calculate</button>
+
+<div class="result">
+
+<h2>Total Gold Needed</h2>
+
+<h1 id="total">0</h1>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const START_COST = 757;
+const GROWTH = 1.009952;
+const MAX_COST = 15000;
+
+function getCost(level) {
+
+    if (level >= 304) {
+        return MAX_COST;
+    }
+
+    const cost = START_COST * Math.pow(GROWTH, level - 1);
+
+    return Math.min(Math.round(cost), MAX_COST);
+}
+
+function calculate() {
+
+    const current = Number(document.getElementById("current").value);
+    const target = Number(document.getElementById("target").value);
+
+    if (!Number.isFinite(current) || current < 1) {
+        alert("Current level must be at least 1.");
+        return;
+    }
+
+    if (!Number.isFinite(target) || target <= current) {
+        alert("Target level must be higher than current level.");
+        return;
+    }
+
+    let total = 0;
+
+    for (let lvl = current; lvl < target; lvl++) {
+
+        if (lvl >= 304) {
+            total += (target - lvl) * MAX_COST;
+            break;
+        }
+
+        total += getCost(lvl);
+    }
+
+    document.getElementById("total").textContent =
+        Math.round(total).toLocaleString();
+}
+
+// Calculate when pressing Enter
+document.getElementById("current").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        calculate();
+    }
+});
+
+document.getElementById("target").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        calculate();
+    }
+});
+
+// Calculate on page load
+calculate();
+
+</script>
+
+</body>
+</html>
